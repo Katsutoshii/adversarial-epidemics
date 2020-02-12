@@ -1,0 +1,11 @@
+{
+    "python.pythonPath": "C:\\ProgramData\\Miniconda3\\envs\\cs89\\python.exe",
+    "cSpell.words": [
+        "Putman",
+        "Soroush",
+        "Vosoughi",
+        "networkx",
+        "pyplot"
+    ],
+    "latex-workshop.latex.outDir": "out"
+}

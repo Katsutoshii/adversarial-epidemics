@@ -4,7 +4,7 @@ Project: epidemic
 File Created: Monday, 10th February 2020 4:25:50 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Monday, 10th February 2020 5:18:30 pm
+Last Modified: Wednesday, 12th February 2020 3:28:43 am
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -39,23 +39,22 @@ class EpidemicGraph():
     def draw(self):
         pos = nx.spring_layout(G) # positions for all nodes
         nx.draw_networkx_nodes(G, pos,
-                       nodelist=[0,1,2,3],
-                       node_color='r',
-                       node_size=500,
-                   alpha=0.8)
+            nodelist=self.susceptible,
+            node_color='b',
+            node_size=500,
+            alpha=0.8)
         nx.draw_networkx_nodes(G, pos,
-                            nodelist=[4,5,6,7],
-                            node_color='b',
-                            node_size=500,
-                        alpha=0.8)
+            nodelist=self.infected,
+            node_color='r',
+            node_size=500,
+            alpha=0.8)
 
         # edges
-        nx.draw_networkx_edges(G,pos,width=1.0,alpha=0.5)
         nx.draw_networkx_edges(G,pos,
-                            edgelist=[(0,1),(1,2),(2,3),(3,0)],
+                            edgelist=[],
                             width=8,alpha=0.5,edge_color='r')
         nx.draw_networkx_edges(G,pos,
-                            edgelist=[(4,5),(5,6),(6,7),(7,4)],
+                            edgelist=[(],
                             width=8,alpha=0.5,edge_color='b')
     
 if __name__ == "__main__":
@@ -64,4 +63,3 @@ if __name__ == "__main__":
     EG: EpidemicGraph = EpidemicGraph(G, ep, infected=set([1]))
     EG.draw()
     plt.show()
-    

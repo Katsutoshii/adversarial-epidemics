@@ -4,12 +4,12 @@ Project: epidemic
 File Created: Monday, 10th February 2020 4:25:50 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Wednesday, 12th February 2020 3:28:43 am
+Last Modified: Thursday, 13th February 2020 9:37:27 am
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
 from typing import List, Set
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -22,13 +22,15 @@ class Epidemic():
 class EpidemicGraph():
     G: nx.Graph
     ep: Epidemic
-    susceptible: Set[int] = set()
-    infected: Set[int] = set()
+    susceptible: Set[int] = field(default_factory=set)
+    infected: Set[int] = field(default_factory=set)
 
     def __post_init__(self):
         """
         Run after the init function finishes
         """
+        for n in G.nodes():
+            print(n)
         
     def step(self):
         """
@@ -54,7 +56,7 @@ class EpidemicGraph():
                             edgelist=[],
                             width=8,alpha=0.5,edge_color='r')
         nx.draw_networkx_edges(G,pos,
-                            edgelist=[(],
+                            edgelist=[],
                             width=8,alpha=0.5,edge_color='b')
     
 if __name__ == "__main__":

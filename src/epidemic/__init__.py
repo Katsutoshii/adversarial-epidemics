@@ -4,7 +4,7 @@ Project: epidemic
 File Created: Monday, 10th February 2020 4:25:50 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Thursday, 13th February 2020 3:50:18 pm
+Last Modified: Thursday, 13th February 2020 3:52:04 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -22,7 +22,7 @@ class Epidemic():
     spread_fraction: float = 0.01
     incubation_period: int = 0
     recovery_period: int = 0
-    recovery_rate: int = 0.5
+    recovery_rate: float = 0.5
     
 @dataclass
 class EpidemicGraph():

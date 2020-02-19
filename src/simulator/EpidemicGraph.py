@@ -1,10 +1,10 @@
 '''
-File: __init__.py
-Project: epidemic
-File Created: Monday, 10th February 2020 4:25:50 pm
+File: EpidemicGraph.py
+Project: simulator
+File Created: Wednesday, 19th February 2020 4:12:59 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Thursday, 13th February 2020 3:52:04 pm
+Last Modified: Wednesday, 19th February 2020 4:28:03 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -14,23 +14,16 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from random import random
 
+from .Stepable import Stepable
+from .Epidemic import Epidemic
+
 @dataclass
-class Epidemic():
-    """
-    Holds the properties of the epidemic
-    """
-    spread_fraction: float = 0.01
-    incubation_period: int = 0
-    recovery_period: int = 0
-    recovery_rate: float = 0.5
-    
-@dataclass
-class EpidemicGraph():
+class EpidemicGraph(Stepable):
     """
     Class for representing an epidemic spreading over a graph
     """
-    G: nx.Graph
-    ep: Epidemic
+    G: nx.Graph = field(default_factory=nx.Graph)
+    ep: Epidemic = field(default_factory=Epidemic)
     pos: List = field(default_factory=list)
 
     # Subgraphs for states
@@ -149,7 +142,7 @@ class EpidemicGraph():
         return changed
 
     def draw_nodes(self, nodes: List[int], color: str,
-            alpha = 0.8, size = 50):
+            alpha = 0.8, size = 25):
         """
         Draws a subset of the nodes on the graph
         """
@@ -173,28 +166,3 @@ class EpidemicGraph():
                 width=1,
                 alpha=0.5,
                 edge_color='black')
-    
-if __name__ == "__main__":
-    n: int = 200
-    k: int = 3
-
-    G: nx.Graph = nx.fast_gnp_random_graph(n=n, p=k/n)
-    ep: Epidemic = Epidemic(recovery_period=2)
-    EG: EpidemicGraph = EpidemicGraph(G, ep, infected={i: 0 for i in range(1)}, immune=set([1]))
-    
-    print("Initialized graph.")
-    EG.draw()
-    plt.show(block=False)
-    
-    command: str = ""
-    changed: bool = True
-    i = 0
-    while changed and command != "x":
-        command = input()
-        i += 1
-        print(f"Running step {i}...")
-
-        changed = EG.step()
-        plt.clf()
-        EG.draw()
-        plt.show(block=False)

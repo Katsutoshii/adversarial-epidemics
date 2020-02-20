@@ -4,7 +4,7 @@ Project: simulator
 File Created: Wednesday, 19th February 2020 4:04:39 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Wednesday, 19th February 2020 4:23:52 pm
+Last Modified: Thursday, 20th February 2020 10:56:56 am
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -28,7 +28,8 @@ class EpidemicSimulator(Stepable):
     
     def __post_init__(self):
         # use the defender to construct the network
-        defender
+        # defender
+        pass
     
     def step(self):
         pass

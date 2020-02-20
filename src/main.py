@@ -4,7 +4,7 @@ Project: src
 File Created: Monday, 10th February 2020 4:26:06 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Wednesday, 19th February 2020 7:19:45 pm
+Last Modified: Thursday, 20th February 2020 1:14:18 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -32,11 +32,11 @@ if __name__ == "__main__":
     print("Initialized graph.")
     
     command: str = ""
-    changed: bool = True
     i: int = 0
     
-    while changed and command != "x":
+    while command != "x":
         print(f"Running step {i}...")
         i += 1
-        EG.savefig(img_path / f"{i}.png", dpi=200)
-        changed = EG.step()
+        EG.savefig(img_path / f"{i}.pdf", dpi=200)
+        if EG.step(): break
+ 

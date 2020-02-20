@@ -4,7 +4,7 @@ Project: simulator
 File Created: Wednesday, 19th February 2020 4:12:59 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Wednesday, 19th February 2020 4:28:03 pm
+Last Modified: Wednesday, 19th February 2020 7:18:19 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -166,3 +166,18 @@ class EpidemicGraph(Stepable):
                 width=1,
                 alpha=0.5,
                 edge_color='black')
+
+    def savefig(self, filename: str, dpi: int = 400):
+        """
+        Saves the figure of the graph
+        """
+        plt.clf()
+        self.draw()
+        
+        plt.axis("off")
+        plt.show(block=False)
+        plt.savefig(
+            filename,
+            dpi=dpi,
+            bbox_inches='tight',
+            pad_inches=0)

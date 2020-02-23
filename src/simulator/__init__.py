@@ -4,12 +4,13 @@ Project: simulator
 File Created: Wednesday, 19th February 2020 4:04:39 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Thursday, 20th February 2020 10:56:56 am
+Last Modified: Sunday, 23rd February 2020 4:55:11 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
 from dataclasses import dataclass
 
+from .PACGraph import PACGraph
 from .Stepable import Stepable
 from .Epidemic import Epidemic
 from .EpidemicGraph import EpidemicGraph

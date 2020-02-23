@@ -4,7 +4,7 @@ Project: simulator
 File Created: Wednesday, 19th February 2020 4:12:59 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Thursday, 20th February 2020 1:18:28 pm
+Last Modified: Thursday, 20th February 2020 9:35:48 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -228,14 +228,14 @@ class EpidemicGraph(Stepable):
         plt.legend(loc="upper right")
         plt.show()
 
-    def show(self):
+    def show(self, block: bool = False):
         """
         Shows a figure by clearing axis and drawing
         """
         plt.clf()
         self.draw()
         plt.axis("off")
-        plt.show(block=False)
+        plt.show(block=block)
 
     def savefig(self, filename: str, dpi: int = 400):
         """

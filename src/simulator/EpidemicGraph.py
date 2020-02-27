@@ -4,7 +4,7 @@ Project: simulator
 File Created: Wednesday, 19th February 2020 4:12:59 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Thursday, 20th February 2020 9:35:48 pm
+Last Modified: Thursday, 27th February 2020 5:43:12 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -95,9 +95,9 @@ class EpidemicGraph(Stepable):
         total_infected: int = 0
         total: int = 0
         for nn in self.G.neighbors(n):
-            total += 1
+            total += self.G[n][nn]['weight']
             if nn in self.infected:
-                total_infected += 1
+                total_infected += self.G[n][nn]['weight']
         
         if total <= 0:
             return
@@ -198,6 +198,18 @@ class EpidemicGraph(Stepable):
             node_size=size,
             alpha=alpha)
 
+    def draw_weighted_edges(self, bins: int = 10):
+        """
+        Plots the network with weighted edges
+        """
+        edgelists: list = [[] for i in range(bins)]
+        for u, v, eprops in self.G.edges(data=True):
+            edgelists[int(bins * eprops['weight'])].append((u, v))
+
+        for i, edges in enumerate(edgelists):
+            nx.draw_networkx_edges(self.G, self.pos, edgelist=edges,
+                width=i * 0.3 + 0.1, alpha=0.6 + i/40)
+        
     def draw(self):
         """
         Draws all nodes and edges
@@ -207,12 +219,8 @@ class EpidemicGraph(Stepable):
         self.draw_nodes(self.infected, 'purple')
         self.draw_nodes(self.symptomatic, 'red')
         self.draw_nodes(self.recovered, 'yellow')
-        
-        nx.draw_networkx_edges(self.G, self.pos,
-                edgelist=self.G.edges(),
-                width=1,
-                alpha=0.5,
-                edge_color='black')
+
+        self.draw_weighted_edges()
 
     def plot_data(self):
         """

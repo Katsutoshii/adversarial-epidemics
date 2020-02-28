@@ -4,7 +4,7 @@ Project: simulator
 File Created: Wednesday, 19th February 2020 4:04:39 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Thursday, 27th February 2020 5:34:26 pm
+Last Modified: Thursday, 27th February 2020 10:54:09 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -19,4 +19,3 @@ class Epidemic():
     incubation_period: int = 0
     recovery_period: int = 0
     recovery_rate: float = 0.5
-    

@@ -4,7 +4,7 @@ Project: simulator
 File Created: Wednesday, 19th February 2020 4:12:59 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Thursday, 27th February 2020 5:43:12 pm
+Last Modified: Friday, 28th February 2020 12:19:50 am
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -45,6 +45,9 @@ class EpidemicGraph(Stepable):
     to_symptomize: List[int] = field(default_factory=list)
     to_recover: List[int] = field(default_factory=list)
 
+    degrees: List[tuple] = field(default_factory=list)
+    verbose: bool = False
+
     def __post_init__(self):
         """
         Run after the init function finishes
@@ -56,12 +59,18 @@ class EpidemicGraph(Stepable):
             self.recovered,
             self.immune)
         
+        # initialize all unset nodes to susceptible
         for n in self.G.nodes():
             if n not in preset:
                 self.susceptible.add(n)
 
+        # if no weights are defined, default to 1
+        for u, v in self.G.edges():
+            if 'weight' not in self.G[u][v]:
+                self.G[u][v]['weight'] = 0.1
+
         self.pos = nx.spring_layout(self.G) 
-        
+        self.degrees = sorted([(n, v) for n, v in nx.degree(self.G)], key=lambda nk: nk[1])
         self.record_data()
         
     def infect(self, n: int):
@@ -166,7 +175,7 @@ class EpidemicGraph(Stepable):
         self.to_infect = []
         self.to_recover = []
         self.to_symptomize = []
-
+        
         self.record_data()
         
         return changed
@@ -187,8 +196,14 @@ class EpidemicGraph(Stepable):
         self.immune_data.append(len(self.immune))
         self.recovered_data.append(len(self.recovered))
 
+    def sorted_susceptible(self):
+        """
+        Returns sorted susceptible
+        """
+        return [(n, k) for n, k in self.degrees if n in self.susceptible]
+
     def draw_nodes(self, nodes: List[int], color: str,
-            alpha = 0.8, size = 25):
+            alpha: float = 0.8, size: float = 25):
         """
         Draws a subset of the nodes on the graph
         """
@@ -255,3 +270,11 @@ class EpidemicGraph(Stepable):
             dpi=dpi,
             bbox_inches='tight',
             pad_inches=0)
+
+    def run(self):
+        """
+        Runs the simulation until the state stops changing
+        """
+        while True:
+            self.show()
+            if not self.step(): break

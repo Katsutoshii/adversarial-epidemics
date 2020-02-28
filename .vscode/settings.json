@@ -4,9 +4,11 @@
         "Putman",
         "Soroush",
         "Vosoughi",
+        "eprops",
         "networkx",
         "pyplot",
-        "strptime"
+        "strptime",
+        "susc"
     ],
     "latex-workshop.latex.outDir": "out"
 }

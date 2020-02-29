@@ -4,7 +4,7 @@ Project: simulator
 File Created: Wednesday, 19th February 2020 4:12:59 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Saturday, 29th February 2020 1:54:22 pm
+Last Modified: Saturday, 29th February 2020 2:06:20 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -13,8 +13,10 @@ from dataclasses import dataclass, field
 import networkx as nx
 import matplotlib.pyplot as plt
 from random import random
+from copy import copy
 
 from tools import draw_weighted_edges
+
 from .Stepable import Stepable
 from .Epidemic import Epidemic
 
@@ -35,11 +37,11 @@ class EpidemicGraph(Stepable):
     recovered: Set[int] = field(default_factory=set)
 
     # Data points for states
-    susceptible_data: List[int] = field(default_factory=list)
-    infected_data: List[int] = field(default_factory=list)
-    symptomatic_data: List[int] = field(default_factory=list)
-    immune_data: List[int] = field(default_factory=list)
-    recovered_data: List[int] = field(default_factory=list)
+    susceptible_data: List[Set[int]] = field(default_factory=list)
+    infected_data: List[Set[int]] = field(default_factory=list)
+    symptomatic_data: List[Set[int]] = field(default_factory=list)
+    immune_data: List[Set[int]] = field(default_factory=list)
+    recovered_data: List[Set[int]] = field(default_factory=list)
 
     # Changes lists
     to_infect: List[int] = field(default_factory=list)
@@ -191,11 +193,11 @@ class EpidemicGraph(Stepable):
         """
         Saves current populations to data lists
         """
-        self.susceptible_data.append(len(self.susceptible))
-        self.infected_data.append(len(self.infected))
-        self.symptomatic_data.append(len(self.symptomatic))
-        self.immune_data.append(len(self.immune))
-        self.recovered_data.append(len(self.recovered))
+        self.susceptible_data.append(copy(self.susceptible))
+        self.infected_data.append(copy(self.infected))
+        self.symptomatic_data.append(copy(self.symptomatic))
+        self.immune_data.append(copy(self.immune))
+        self.recovered_data.append(copy(self.recovered))
 
     def sorted_susceptible(self):
         """
@@ -232,11 +234,11 @@ class EpidemicGraph(Stepable):
         """
         plt.clf()
         x: List[int] = [i for i in range(len(self.susceptible_data))]
-        plt.plot(x, self.immune_data, color="green", label="Immune")
-        plt.plot(x, self.susceptible_data, color="blue", label="Susceptible")
-        plt.plot(x, self.infected_data, color="purple", label="Infected")
-        plt.plot(x, self.symptomatic_data, color="red", label="Symptomatic")
-        plt.plot(x, self.recovered_data, color="yellow", label="Recovered")
+        plt.plot(x, [len(s) for s in self.immune_data], color="green", label="Immune")
+        plt.plot(x, [len(s) for s in  self.susceptible_data], color="blue", label="Susceptible")
+        plt.plot(x, [len(s) for s in self.infected_data], color="purple", label="Infected")
+        plt.plot(x, [len(s) for s in self.symptomatic_data], color="red", label="Symptomatic")
+        plt.plot(x, [len(s) for s in self.recovered_data], color="yellow", label="Recovered")
         plt.legend(loc="upper right")
         plt.show()
 

@@ -4,7 +4,7 @@ Project: simulator
 File Created: Wednesday, 19th February 2020 4:12:59 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Friday, 28th February 2020 12:19:50 am
+Last Modified: Saturday, 29th February 2020 1:54:22 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -14,6 +14,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from random import random
 
+from tools import draw_weighted_edges
 from .Stepable import Stepable
 from .Epidemic import Epidemic
 
@@ -212,18 +213,6 @@ class EpidemicGraph(Stepable):
             node_color=color,
             node_size=size,
             alpha=alpha)
-
-    def draw_weighted_edges(self, bins: int = 10):
-        """
-        Plots the network with weighted edges
-        """
-        edgelists: list = [[] for i in range(bins)]
-        for u, v, eprops in self.G.edges(data=True):
-            edgelists[int(bins * eprops['weight'])].append((u, v))
-
-        for i, edges in enumerate(edgelists):
-            nx.draw_networkx_edges(self.G, self.pos, edgelist=edges,
-                width=i * 0.3 + 0.1, alpha=0.6 + i/40)
         
     def draw(self):
         """
@@ -235,7 +224,7 @@ class EpidemicGraph(Stepable):
         self.draw_nodes(self.symptomatic, 'red')
         self.draw_nodes(self.recovered, 'yellow')
 
-        self.draw_weighted_edges()
+        draw_weighted_edges(self.G, self.pos)
 
     def plot_data(self):
         """

@@ -4,12 +4,15 @@ Project: tools
 File Created: Thursday, 27th February 2020 10:57:25 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Thursday, 27th February 2020 11:56:31 pm
+Last Modified: Saturday, 29th February 2020 1:58:02 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 from typing import List
 import networkx as nx
 from random import random, gauss
+
+from .visualization import draw_weighted_edges
+from .analysis import squared_error
 
 def random_weighted_graph(
         n: int = 20,

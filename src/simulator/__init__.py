@@ -4,14 +4,17 @@ Project: simulator
 File Created: Wednesday, 19th February 2020 4:04:39 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Thursday, 27th February 2020 10:57:01 pm
+Last Modified: Monday, 2nd March 2020 3:18:14 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
 from dataclasses import dataclass
 
-from .PACGraph import PACGraph
 from .Stepable import Stepable
+from .Records import Records
+from .SIRD import SIRD
+from .SIRDGraph import SIRDGraph
+from .PACGraph import PACGraph
 from .Epidemic import Epidemic
 from .EpidemicGraph import EpidemicGraph
 from .Defender import Defender

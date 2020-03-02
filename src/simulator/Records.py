@@ -4,7 +4,7 @@ Project: simulator
 File Created: Monday, 2nd March 2020 1:46:07 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Monday, 2nd March 2020 2:18:04 pm
+Last Modified: Monday, 2nd March 2020 4:41:54 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -22,6 +22,7 @@ class Records():
 
     def __post_init__(self):
         self.records = [[] for l in self.plabels]
+        print("Records init.")
 
     def record(self, data: tuple):
         """
@@ -58,3 +59,11 @@ class Records():
 
         plt.legend(loc="upper right")
         plt.show()
+
+    def get_dict(self, labels: set) -> dict:
+        """
+        Returns a dictionary representation of the recorded data
+        """
+        return {label: [int(v) for v in self.records[i]]
+            for i, label in enumerate(self.plabels)
+            if label in labels}

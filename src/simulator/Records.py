@@ -4,7 +4,7 @@ Project: simulator
 File Created: Monday, 2nd March 2020 1:46:07 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Monday, 2nd March 2020 4:41:54 pm
+Last Modified: Monday, 2nd March 2020 5:28:09 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -22,7 +22,6 @@ class Records():
 
     def __post_init__(self):
         self.records = [[] for l in self.plabels]
-        print("Records init.")
 
     def record(self, data: tuple):
         """

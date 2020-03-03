@@ -4,7 +4,7 @@ Project: simulator
 File Created: Monday, 2nd March 2020 1:45:44 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Monday, 2nd March 2020 3:11:58 pm
+Last Modified: Monday, 2nd March 2020 4:50:13 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -28,10 +28,13 @@ class SIRD(Stepable):
 
     xi: float = 0       # external infection amount
 
-    records: Records = Records(
-        pcolors=["blue", "red", "yellow", "black"],
-        plabels=["S", "I", "R", "D"])
+    records: Records = field(default_factory=Records)
 
+    def __post_init__(self):
+        self.records = Records(
+            pcolors=["blue", "red", "yellow", "black"],
+            plabels=["susceptible", "cases", "recoveries", "deaths"])
+            
     def infect(self, amount: float):
         self.xi = amount
         
@@ -58,3 +61,6 @@ class SIRD(Stepable):
 
     def plot(self):
         self.records.plot()
+
+    def get_dict(self, labels: set = set(["I", "R", "D"])) -> dict:
+        return self.records.get_dict(labels)

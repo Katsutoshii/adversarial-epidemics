@@ -4,7 +4,7 @@ Project: tools
 File Created: Saturday, 29th February 2020 1:50:46 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Monday, 2nd March 2020 3:26:14 pm
+Last Modified: Monday, 2nd March 2020 4:40:22 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -29,16 +29,17 @@ def draw_colored_nodes(G: nx.Graph,
         attrname: str,
         color_attr: str,
         size_attr: str,
+        color_factor: float = 1,
         size_factor: float = 1/10,
         y_offset: float = 0.03):
     
     colors: list = []
     sizes: list = []
     for n in G.nodes():
-        red: float = getattr(G.nodes[n][attrname], color_attr)
-        size: float = getattr(G.nodes[n][attrname], size_attr)
+        red: float = color_factor * getattr(G.nodes[n][attrname], color_attr)
+        size: float = size_factor * getattr(G.nodes[n][attrname], size_attr)
         colors.append((red, 0, 0))
-        sizes.append(size * size_factor)
+        sizes.append(size)
         
     nx.draw_networkx_nodes(G, pos, labels={n: n for n in G.nodes()}, node_color=colors, node_size=sizes)
     nx.draw_networkx_labels(G,

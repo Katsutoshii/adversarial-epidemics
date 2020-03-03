@@ -4,7 +4,7 @@ Project: simulator
 File Created: Monday, 2nd March 2020 3:13:54 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Monday, 2nd March 2020 3:17:45 pm
+Last Modified: Monday, 2nd March 2020 4:51:43 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 from dataclasses import dataclass, field
@@ -12,6 +12,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from simulator import SIRD, Records, Stepable
 from tools import draw_weighted_edges, draw_colored_nodes
+import json
 
 @dataclass
 class SIRDGraph(Stepable):
@@ -19,10 +20,6 @@ class SIRDGraph(Stepable):
     edges: list
     pos: dict = field(default_factory=dict)
     G: nx.Graph = nx.Graph()
-
-    records: Records = Records(
-        pcolors=["blue", "red", "yellow", "black"],
-        plabels=["S", "I", "R", "D"])
 
     def __post_init__(self):
         for node, sird, pos in self.nodes:
@@ -47,6 +44,9 @@ class SIRDGraph(Stepable):
         plt.show(block=block)
     
     def step(self) -> bool:
+        """
+        Runs a timestep of the simulation
+        """
         for n in self.G.nodes():
             amount: float = 0
             for nn in self.G.neighbors(n):
@@ -56,16 +56,24 @@ class SIRDGraph(Stepable):
             self.G.nodes[n]["SIRD"].infect(amount)
         
         for n in self.G.nodes():
-            self.G.nodes[n]["SIRD"].step()
+            self.G.nodes[n]["SIRD"].step()  # records data
         return True
 
-    def record(self):
-        # TODO
-        self.records.record((0,))
+    def get_dict(self):
+        """
+        Gets a dictionary representation of the recorde data
+        """
+        return {n: self.G.nodes[n]["SIRD"].get_dict(labels=set(["cases", "recoveries", "deaths"]))
+            for n in self.G.nodes()}
 
-    def plot(self):
-        self.records.plot()
-    
+    def save_dict(self):
+        """
+        Saves the data as a json file
+        """
+        data_dict: dict = self.get_dict()
+        with open("../data/out/test.json", "w") as fp:
+            json.dump(data_dict, fp)
+
     def run(self, maxsteps: int = 200):
         """
         Runs the simulation until the state stops changing
@@ -74,4 +82,3 @@ class SIRDGraph(Stepable):
             self.show()
             if not self.step():
                 break
-

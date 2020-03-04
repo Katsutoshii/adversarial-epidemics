@@ -50,7 +50,7 @@ def get_graph_with_labels(G, pop_dict, node_wreg, spread_rate, mortality_rate, r
     return nodes, edges
 
 def get_name_alpha3_conv():
-    l_data = pd.read_csv('../../data/SIRDNMetrics/Abrevs.csv')
+    l_data = pd.read_csv('../data/SIRDNMetrics/Abrevs.csv')
     code_dict = {l_data['Country'][i]: l_data['Alpha3Code'][i] for i in range(l_data.shape[0])}  
     return code_dict
 
@@ -59,7 +59,7 @@ def get_name_alpha3_conv():
 # POPULATION DATA RETRIEVAL
 
 def get_pop_data(year):
-    p_data = pd.read_csv('../../data/SIRDNMetrics/Population.csv')
+    p_data = pd.read_csv('../data/SIRDNMetrics/Population.csv')
     
     code_dict = get_name_alpha3_conv()
     
@@ -80,7 +80,7 @@ def get_pop_data(year):
 # POPULATION DENSITY RETRIEVAL
 
 def get_spread_rate_dict(year, max_spread_rate):
-    p_data = pd.read_csv('../../data/SIRDNMetrics/PopulationDensity.csv')
+    p_data = pd.read_csv('../data/SIRDNMetrics/PopulationDensity.csv')
     
     code_dict = get_name_alpha3_conv()
     
@@ -107,14 +107,14 @@ def get_spread_rate_dict(year, max_spread_rate):
 # Gets country coordinates (latitude, longitude)
 # Uses coords, hScale, vScale, hShift and vShift to find positions for the nodes
 def get_pos_dict(hScale, vScale, hShift, vShift):
-    pos_data = pd.read_csv('../../data/SIRDNMetrics/Location.csv')
+    pos_data = pd.read_csv('../data/SIRDNMetrics/Location.csv')
     pos = {pos_data['Country'][i]:(pos_data['Longitude'][i] * hScale + hShift, pos_data['Latitude'][i] * vScale + vShift) for i in range(pos_data.shape[0])}
     return pos
 
 # Calculates country positions from scratch
 # (0,0) at the top left corner
 def get_pos_data():
-    world_map=mpimg.imread('../../data/SIRDNMetrics/worldMap.png')
+    world_map=mpimg.imread('../data/SIRDNMetrics/worldMap.png')
     map_dim = world_map.shape
     
     pos_dict = get_pos_dict(map_dim[1]/360, -1*map_dim[0]/240, map_dim[1]/2, map_dim[0]/2 + 300)
@@ -161,7 +161,7 @@ def get_SIRDN_graph():
 # Visualization Helper
 def plot_world_map(w=180, h=160):
     fig=plt.figure(figsize=(w, h))
-    world_map=mpimg.imread('../../data/SIRDNMetrics/worldMap.png')
+    world_map=mpimg.imread('../data/SIRDNMetrics/worldMap.png')
     plt.imshow(world_map)
     
 # takes nodes, returns nodes->labels dict

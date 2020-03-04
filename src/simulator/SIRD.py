@@ -4,7 +4,7 @@ Project: simulator
 File Created: Monday, 2nd March 2020 1:45:44 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Monday, 2nd March 2020 4:50:13 pm
+Last Modified: Wednesday, 4th March 2020 12:16:29 am
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -62,5 +62,5 @@ class SIRD(Stepable):
     def plot(self):
         self.records.plot()
 
-    def get_dict(self, labels: set = set(["I", "R", "D"])) -> dict:
+    def get_dict(self, labels: set = set(["cases", "recoveries", "deaths"])) -> dict:
         return self.records.get_dict(labels)

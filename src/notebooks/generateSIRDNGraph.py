@@ -1,28 +1,30 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[12]:
 
 
 import sys
 sys.path.append("/Users/sucharitajayanti/Documents/W'20/CS 189 - Network Science and Complex Systems/finalProject/adversarial-epidemics/src")
 
 
-# In[2]:
+# In[13]:
 
 
+import numpy as np
+import pandas as pd
 import networkx as nx
 import itertools
 import datapackage
-import numpy as np
-import pandas as pd
-from typing import List
+
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
 from simulator import SIRD, SIRDGraph
 from preprocessing import airNet
 
 
-# In[3]:
+# In[14]:
 
 
 def clean_up_data(G, D, string, default_val):
@@ -35,7 +37,7 @@ def clean_up_data(G, D, string, default_val):
     return D
 
 
-# In[4]:
+# In[15]:
 
 
 # Calculates what the weight should be on edge (n1,n2) n1!=n2
@@ -45,7 +47,7 @@ def get_edge_weight(base_weight, w_n1, w_n2):
     return base_weight
 
 
-# In[5]:
+# In[16]:
 
 
 def get_graph_with_labels(G, pop_dict, node_wreg, spread_rate, mortality_rate, recovery, infected, pos, max_weight):
@@ -67,7 +69,7 @@ def get_graph_with_labels(G, pop_dict, node_wreg, spread_rate, mortality_rate, r
        
 
 
-# In[6]:
+# In[17]:
 
 
 # Population Related Functions
@@ -95,7 +97,29 @@ def pop_dict_year(data, year):
     return pop_dict
 
 
-# In[20]:
+# In[18]:
+
+
+# HELPER FUNCTION
+# Gets country coordinates (latitude, longitude)
+# Uses coords, hScale, vScale, hShift and vShift to find positions for the nodes
+def get_pos_dict(hScale, vScale, hShift, vShift):
+    pos_data = pd.read_csv('../../data/SIRDNMetrics/Location.csv')
+    pos = {pos_data['Country'][i]:(pos_data['Longitude'][i] * hScale + hShift, pos_data['Latitude'][i] * vScale + vShift) for i in range(pos_data.shape[0])}
+    return pos
+
+# Calculates country positions from scratch
+# (0,0) at the top left corner
+def get_pos_data():
+    world_map=mpimg.imread('../../data/SIRDNMetrics/worldMap.png')
+    map_dim = world_map.shape
+    
+    pos_dict = get_pos_dict(map_dim[1]/360, -1*map_dim[0]/240, map_dim[1]/2, map_dim[0]/2 + 300)
+    
+    return pos_dict
+
+
+# In[19]:
 
 
 def temp_create_data(G, pop_dict, max_weight):
@@ -115,18 +139,45 @@ def temp_create_data(G, pop_dict, max_weight):
     infected["Vietnam"] =  40
     infected["China"] = 100
 
-    percent_infected = {n:infected[n]/pop_dict[n] for n in infected}
-    pos = nx.spring_layout(G)
-    
-    return pop_dict, node_wreg, spread_rate, mortality_rate, recovery, infected, percent_infected, pos
+    percent_infected = {n:infected[n]/pop_dict[n] for n in infected}    
+    return pop_dict, node_wreg, spread_rate, mortality_rate, recovery, infected, percent_infected
+
+
+# ## Graph Generation Code ##
+
+# In[20]:
+
 
 def get_SIRDN_graph():
     G, max_weight = airNet.generate_country_graph()
     pop_dict = pop_dict_year(get_pop_data(), 2003)
-    
+    pos = get_pos_data()
     #TEMP HACK
-    pop_dict, node_wreg, spread_rate, mortality_rate, recovery, infected, percent_infected, pos =  temp_create_data(G, pop_dict, max_weight)
+    pop_dict, node_wreg, spread_rate, mortality_rate, recovery, infected, percent_infected =  temp_create_data(G, pop_dict, max_weight)
     
     # Generate SIRDN graph
     n, e = get_graph_with_labels(G, pop_dict, node_wreg, spread_rate, mortality_rate, recovery, percent_infected, pos, max_weight)
+    return n, e, G, pos
 
+
+# ## Visualization Code ##
+
+# In[21]:
+
+
+# Visualization Helper
+def plot_world_map(w=180, h=160):
+    fig=plt.figure(figsize=(w, h))
+    world_map=mpimg.imread('../../data/SIRDNMetrics/worldMap.png')
+    plt.imshow(world_map)
+    
+# takes list of nodes, returns nodes->labels dict
+def get_labels(nodes):
+    l_data = pd.read_csv('../../data/SIRDNMetrics/Abrevs.csv')
+    labels = {l_data['Country'][i]: l_data['Alpha3Code'][i] for i in range(l_data.shape[0])}
+    
+    for n in nodes:
+        if n not in labels:
+            labels[n] = 'N/A'
+            
+    return labels

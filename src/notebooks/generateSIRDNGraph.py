@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[12]:
+# In[76]:
 
 
 import sys
 sys.path.append("/Users/sucharitajayanti/Documents/W'20/CS 189 - Network Science and Complex Systems/finalProject/adversarial-epidemics/src")
 
 
-# In[13]:
+# In[77]:
 
 
 import numpy as np
@@ -24,7 +24,7 @@ from simulator import SIRD, SIRDGraph
 from preprocessing import airNet
 
 
-# In[14]:
+# In[78]:
 
 
 def clean_up_data(G, D, string, default_val):
@@ -37,7 +37,7 @@ def clean_up_data(G, D, string, default_val):
     return D
 
 
-# In[15]:
+# In[79]:
 
 
 # Calculates what the weight should be on edge (n1,n2) n1!=n2
@@ -47,7 +47,7 @@ def get_edge_weight(base_weight, w_n1, w_n2):
     return base_weight
 
 
-# In[16]:
+# In[80]:
 
 
 def get_graph_with_labels(G, pop_dict, node_wreg, spread_rate, mortality_rate, recovery, infected, pos, max_weight):
@@ -69,36 +69,43 @@ def get_graph_with_labels(G, pop_dict, node_wreg, spread_rate, mortality_rate, r
        
 
 
-# In[17]:
+# In[81]:
 
 
-# Population Related Functions
+def get_name_alpha3_conv():
+    l_data = pd.read_csv('../../data/SIRDNMetrics/Abrevs.csv')
+    code_dict = {l_data['Country'][i]: l_data['Alpha3Code'][i] for i in range(l_data.shape[0])}  
+    return code_dict
 
-def get_pop_data():
-    data_url = 'https://datahub.io/JohnSnowLabs/population-figures-by-country/datapackage.json'
 
-    # to load Data Package into storage
-    package = datapackage.Package(data_url)
+# In[82]:
 
-    # to load only tabular data
-    resources = package.resources
-    for resource in resources:
-        if resource.tabular:
-            data = pd.read_csv(resource.descriptor['path'])
-    return data
 
-def pop_dict_year(data, year):
+# POPULATION DATA RETRIEVAL
+
+def get_pop_data(year):
+    p_data = pd.read_csv('../../data/SIRDNMetrics/Population.csv')
+    
+    code_dict = get_name_alpha3_conv()
+    
     label = 'Year_' + str(year)
-    df = data[['Country',label]]
-    pop_dict = {}
+    df = p_data[['Country_Code',label]]
+    pop_code_dict = {}
     for i in range(df.shape[0]):
-        pop_dict[df.iloc[i][0]] = df.iloc[i][1]
-
+        pop_code_dict[df.iloc[i][0]] = df.iloc[i][1]
+    
+    pop_dict = {}
+    for loc in code_dict:
+        if code_dict[loc] in pop_code_dict:
+            pop_dict[loc] = pop_code_dict[code_dict[loc]]
+            
     return pop_dict
 
 
-# In[18]:
+# In[83]:
 
+
+# NODE POSITION DATA RETRIEVAL
 
 # HELPER FUNCTION
 # Gets country coordinates (latitude, longitude)
@@ -119,12 +126,12 @@ def get_pos_data():
     return pos_dict
 
 
-# In[19]:
+# In[84]:
 
+
+# TEMP HACK FUNCTION FOR OTHER DATA RETRIEVAL
 
 def temp_create_data(G, pop_dict, max_weight):
-    pop_dict["Hong Kong"] = pop_dict['Hong Kong SAR, China']
-
     node_wreg = {k:1 for k in pop_dict}
     spread_rate = {k:0.5 for k in pop_dict}
     mortality_rate = {k:0.1 for k in pop_dict}
@@ -145,12 +152,12 @@ def temp_create_data(G, pop_dict, max_weight):
 
 # ## Graph Generation Code ##
 
-# In[20]:
+# In[85]:
 
 
 def get_SIRDN_graph():
     G, max_weight = airNet.generate_country_graph()
-    pop_dict = pop_dict_year(get_pop_data(), 2003)
+    pop_dict = get_pop_data(2003)#pop_dict_year(get_pop_data(), 2003)
     pos = get_pos_data()
     #TEMP HACK
     pop_dict, node_wreg, spread_rate, mortality_rate, recovery, infected, percent_infected =  temp_create_data(G, pop_dict, max_weight)
@@ -162,7 +169,7 @@ def get_SIRDN_graph():
 
 # ## Visualization Code ##
 
-# In[21]:
+# In[86]:
 
 
 # Visualization Helper
@@ -171,13 +178,21 @@ def plot_world_map(w=180, h=160):
     world_map=mpimg.imread('../../data/SIRDNMetrics/worldMap.png')
     plt.imshow(world_map)
     
-# takes list of nodes, returns nodes->labels dict
+# takes nodes, returns nodes->labels dict
+# sanatizes label list in between if necessary
 def get_labels(nodes):
-    l_data = pd.read_csv('../../data/SIRDNMetrics/Abrevs.csv')
-    labels = {l_data['Country'][i]: l_data['Alpha3Code'][i] for i in range(l_data.shape[0])}
+    code_dict = get_name_alpha3_conv()
     
+    labels = {}
     for n in nodes:
-        if n not in labels:
+        if n in code_dict:
+            labels[n] = code_dict[n]
+        else:
             labels[n] = 'N/A'
-            
+
     return labels
+
+
+
+
+

@@ -4,12 +4,13 @@ Project: tools
 File Created: Saturday, 29th February 2020 1:50:46 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Monday, 2nd March 2020 3:26:14 pm
+Last Modified: Tuesday, 3rd March 2020 12:32:05 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
 import networkx as nx
 from typing import List
+import math
 
 def draw_weighted_edges(G: nx.Graph, pos: List[tuple],
     bins: int = 10, width_factor: float = 0.4):
@@ -29,24 +30,31 @@ def draw_colored_nodes(G: nx.Graph,
         attrname: str,
         color_attr: str,
         size_attr: str,
+        color_factor: float = 1,
         size_factor: float = 1/10,
-        y_offset: float = 0.03):
+        y_offset: float = 0.03,
+        font_size: int = 12,
+        font_color: str = "black",
+        log: bool = True,
+        sqrt_color: bool = True):
     
     colors: list = []
     sizes: list = []
     for n in G.nodes():
-        red: float = getattr(G.nodes[n][attrname], color_attr)
-        size: float = getattr(G.nodes[n][attrname], size_attr)
-        colors.append((red, 0, 0))
-        sizes.append(size * size_factor)
+        obj = G.nodes[n][attrname]
+        red: float = color_factor * getattr(obj, color_attr)
+        size: float = size_factor * getattr(obj, size_attr)
+        if log and size > 0:
+            size = math.log(size)
+        if sqrt_color and red > 0:
+            red = math.sqrt(red)
+            
+        colors.append((min(red, 1), 0, 0))
+        sizes.append(size)
         
     nx.draw_networkx_nodes(G, pos, labels={n: n for n in G.nodes()}, node_color=colors, node_size=sizes)
     nx.draw_networkx_labels(G,
         {n: (p[0], p[1] - y_offset) for n, p in pos.items()},
-        labels={n: n for n in G.nodes()})
-    # print(nodelists)
-    # for i, nodes in enumerate(nodelists):
-    #     color = [(i / bins + 0.1, 0.0, 0.0)]
-    #     print(f"color for {i} = {color}")
-    #     nx.draw_networkx_nodes(G, pos,
-    #         nodelist=nodes, label=nodes, node_color=color)
+        labels={n: n for n in G.nodes()},
+        font_size=font_size,
+        font_color=font_color)

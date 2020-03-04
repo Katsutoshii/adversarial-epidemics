@@ -2,15 +2,22 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 mpl.style.use('seaborn')
 import heapq
+import json
+
 
 def calculate_diff(generated, truth, k):
     diff= {}
     data_points= len(generated[list(generated.keys())[0]]['cases'])
     heap= []
-    
-    for country in generated:
+    missing= []
+
+    for country in truth:
         diff[country]= {'cases': 0, 'deaths': 0, 'recoveries': 0, 'total': 0}
         
+        if country not in generated:
+            missing.append(country)
+            continue
+
         for index in range(data_points):
             diff[country]['cases']+= (generated[country]['cases'][index] - truth[country]['cases'][index])**2
             diff[country]['deaths']+= (generated[country]['deaths'][index] - truth[country]['deaths'][index])**2
@@ -26,7 +33,7 @@ def calculate_diff(generated, truth, k):
         else:
             heapq.heappushpop(heap, (diff[country]['total'], country))
             
-    
+    print("Missing countries from generated data: ", missing)
     return diff, heap
 
 def plot_max_error_countries(generated, truth, countries):
@@ -51,11 +58,20 @@ def plot_max_error_countries(generated, truth, countries):
         ax.plot(diff[country]['recoveries'], marker='o', markersize=12, linewidth= 4, label= 'recoveries')
         ax.plot(diff[country]['deaths'], marker='o', markersize=12,  linewidth= 4, label= 'deaths')
         ax.legend()
+    
+    plt.show()
+    
+def calculate(k= 2):
+    with open("../data/out/test.json", "r") as file_handle:
+        generated= json.load(file_handle)
 
-def calculate(generated, truth, k):
+    with open("../data/in/all_countries_data.json", "r") as file_handle:
+        truth= json.load(file_handle)
+
     diff, max_error_countries= calculate_diff(generated, truth, k)
     plot_max_error_countries(generated, truth, max_error_countries)   
 
+# calculate(k= 2)
 ## dummy values
 
 # generated= {"China": {

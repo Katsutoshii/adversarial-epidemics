@@ -4,7 +4,7 @@ Project: simulator
 File Created: Monday, 2nd March 2020 3:13:54 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Tuesday, 3rd March 2020 12:06:07 pm
+Last Modified: Tuesday, 3rd March 2020 9:48:32 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 from dataclasses import dataclass, field
@@ -13,6 +13,10 @@ import matplotlib.pyplot as plt
 from simulator import SIRD, Records, Stepable
 from tools import draw_weighted_edges, draw_colored_nodes
 import json
+from typing import Callable
+
+def null_background():
+    pass
 
 @dataclass
 class SIRDGraph(Stepable):
@@ -28,6 +32,9 @@ class SIRDGraph(Stepable):
     color_factor: float = 2
     y_offset: float = 0.03
     font_color: str = "black"
+    labels: bool = False
+
+    draw_background: Callable = null_background
 
     def __post_init__(self):
         for node, sird, pos in self.nodes:
@@ -38,6 +45,7 @@ class SIRDGraph(Stepable):
         self.G.add_weighted_edges_from(self.edges)
 
     def draw(self):
+        self.draw_background()
         draw_weighted_edges(self.G, self.pos,
             width_factor=self.width_factor)
         draw_colored_nodes(self.G, self.pos,
@@ -46,7 +54,8 @@ class SIRDGraph(Stepable):
             color_factor=self.color_factor,
             font_size=self.font_size,
             font_color=self.font_color,
-            y_offset=self.y_offset)
+            y_offset=self.y_offset,
+            labels=self.labels)
     
     def show(self, block: bool = False):
         """

@@ -73,7 +73,7 @@ class SIRDGraph(Stepable):
         for n in self.G.nodes():
             amount: float = 0
             for nn in self.G.neighbors(n):
-                nn_sird = self.G.nodes[n]["SIRD"]
+                nn_sird = self.G.nodes[nn]["SIRD"]
                 amount += self.G[n][nn]['weight'] * nn_sird.i
             
             self.G.nodes[n]["SIRD"].infect(amount)

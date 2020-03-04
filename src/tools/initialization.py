@@ -12,8 +12,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
+from tools import generate_country_graph
 from simulator import SIRD
-from preprocessing import airNet
 
 def clean_up_data(G, D, string, default_val):
     missed = np.setdiff1d(list(G.nodes()), list(D.keys()))
@@ -144,7 +144,7 @@ def temp_create_data(G, pop_dict, max_weight):
 
 # ## Graph Generation Code ##
 def get_SIRDN_graph():
-    G, max_weight = airNet.generate_country_graph()
+    G, max_weight = generate_country_graph()
     pop_dict = get_pop_data(2003)#pop_dict_year(get_pop_data(), 2003)
     spread_rate = get_spread_rate_dict(2003, 0.2)
     pos = get_pos_data()

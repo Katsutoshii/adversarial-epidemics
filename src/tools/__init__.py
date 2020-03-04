@@ -13,4 +13,5 @@ import networkx as nx
 from .misc import random_weighted_graph, gaussian_choice, sort_by_deg, clipped_gauss
 from .visualization import draw_weighted_edges, draw_colored_nodes
 from .analysis import squared_error
-from .preprocessing import get_SIRDN_graph, plot_world_map
+from .preprocessing import generate_country_graph
+from .initialization import get_SIRDN_graph, plot_world_map

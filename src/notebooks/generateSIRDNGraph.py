@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[76]:
+# In[13]:
 
 
 import sys
 sys.path.append("/Users/sucharitajayanti/Documents/W'20/CS 189 - Network Science and Complex Systems/finalProject/adversarial-epidemics/src")
 
 
-# In[77]:
+# In[14]:
 
 
 import numpy as np
@@ -24,7 +24,7 @@ from simulator import SIRD, SIRDGraph
 from preprocessing import airNet
 
 
-# In[78]:
+# In[15]:
 
 
 def clean_up_data(G, D, string, default_val):
@@ -37,7 +37,7 @@ def clean_up_data(G, D, string, default_val):
     return D
 
 
-# In[79]:
+# In[16]:
 
 
 # Calculates what the weight should be on edge (n1,n2) n1!=n2
@@ -47,7 +47,7 @@ def get_edge_weight(base_weight, w_n1, w_n2):
     return base_weight
 
 
-# In[80]:
+# In[17]:
 
 
 def get_graph_with_labels(G, pop_dict, node_wreg, spread_rate, mortality_rate, recovery, infected, pos, max_weight):
@@ -69,7 +69,7 @@ def get_graph_with_labels(G, pop_dict, node_wreg, spread_rate, mortality_rate, r
        
 
 
-# In[81]:
+# In[18]:
 
 
 def get_name_alpha3_conv():
@@ -78,7 +78,7 @@ def get_name_alpha3_conv():
     return code_dict
 
 
-# In[82]:
+# In[19]:
 
 
 # POPULATION DATA RETRIEVAL
@@ -102,7 +102,34 @@ def get_pop_data(year):
     return pop_dict
 
 
-# In[83]:
+# In[34]:
+
+
+# POPULATION DENSITY RETRIEVAL
+
+def get_spread_rate_dict(year, max_spread_rate):
+    p_data = pd.read_csv('../../data/SIRDNMetrics/PopulationDensity.csv')
+    
+    code_dict = get_name_alpha3_conv()
+    
+    label = str(year)
+    df = p_data[['Country Code',label]]
+    pop_code_dict = {}
+    
+    max_density = 0
+    for i in range(df.shape[0]):
+        pop_code_dict[df.iloc[i][0]] = df.iloc[i][1]
+        max_density = max(df.iloc[i][1], max_density)
+            
+    pop_dict = {}
+    for loc in code_dict:
+        if code_dict[loc] in pop_code_dict:
+            pop_dict[loc] = pop_code_dict[code_dict[loc]] * (max_spread_rate)/(max_density)
+            
+    return pop_dict
+
+
+# In[20]:
 
 
 # NODE POSITION DATA RETRIEVAL
@@ -126,14 +153,13 @@ def get_pos_data():
     return pos_dict
 
 
-# In[84]:
+# In[39]:
 
 
 # TEMP HACK FUNCTION FOR OTHER DATA RETRIEVAL
 
 def temp_create_data(G, pop_dict, max_weight):
     node_wreg = {k:1 for k in pop_dict}
-    spread_rate = {k:0.5 for k in pop_dict}
     mortality_rate = {k:0.1 for k in pop_dict}
     recovery = {k:0.8 for k in pop_dict}
     infected = {k:0 for k in pop_dict}
@@ -147,20 +173,21 @@ def temp_create_data(G, pop_dict, max_weight):
     infected["China"] = 100
 
     percent_infected = {n:infected[n]/pop_dict[n] for n in infected}    
-    return pop_dict, node_wreg, spread_rate, mortality_rate, recovery, infected, percent_infected
+    return node_wreg, mortality_rate, recovery, infected, percent_infected
 
 
 # ## Graph Generation Code ##
 
-# In[85]:
+# In[40]:
 
 
 def get_SIRDN_graph():
     G, max_weight = airNet.generate_country_graph()
     pop_dict = get_pop_data(2003)#pop_dict_year(get_pop_data(), 2003)
+    spread_rate = get_spread_rate_dict(2003, 0.2)
     pos = get_pos_data()
     #TEMP HACK
-    pop_dict, node_wreg, spread_rate, mortality_rate, recovery, infected, percent_infected =  temp_create_data(G, pop_dict, max_weight)
+    node_wreg, mortality_rate, recovery, infected, percent_infected =  temp_create_data(G, pop_dict, max_weight)
     
     # Generate SIRDN graph
     n, e = get_graph_with_labels(G, pop_dict, node_wreg, spread_rate, mortality_rate, recovery, percent_infected, pos, max_weight)
@@ -169,7 +196,7 @@ def get_SIRDN_graph():
 
 # ## Visualization Code ##
 
-# In[86]:
+# In[32]:
 
 
 # Visualization Helper
@@ -191,7 +218,6 @@ def get_labels(nodes):
             labels[n] = 'N/A'
 
     return labels
-
 
 
 

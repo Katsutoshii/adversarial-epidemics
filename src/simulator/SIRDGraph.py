@@ -4,7 +4,7 @@ Project: simulator
 File Created: Monday, 2nd March 2020 3:13:54 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Wednesday, 4th March 2020 12:55:28 pm
+Last Modified: Wednesday, 4th March 2020 1:23:15 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 from dataclasses import dataclass, field
@@ -43,6 +43,12 @@ class SIRDGraph(Stepable):
             self.pos[node] = pos
 
         self.G.add_weighted_edges_from(self.edges)
+
+    def disconnect(self, n: object, m: object):
+        """
+        Disconnects two nodes
+        """
+        self.G.remove_edge(n, m)
 
     def draw(self):
         self.draw_background()

@@ -4,7 +4,7 @@ Project: tools
 File Created: Saturday, 29th February 2020 1:50:46 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Tuesday, 3rd March 2020 12:32:05 pm
+Last Modified: Tuesday, 3rd March 2020 9:50:13 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -17,6 +17,7 @@ def draw_weighted_edges(G: nx.Graph, pos: List[tuple],
     """
     Plots the network with weighted edges
     """
+    print("Width factor =", width_factor)
     edgelists: list = [[] for i in range(bins)]
     for u, v, eprops in G.edges(data=True):
         edgelists[int(bins * eprops['weight'])].append((u, v))
@@ -35,17 +36,19 @@ def draw_colored_nodes(G: nx.Graph,
         y_offset: float = 0.03,
         font_size: int = 12,
         font_color: str = "black",
-        log: bool = True,
-        sqrt_color: bool = True):
+        sqrt_size: bool = True,
+        sqrt_color: bool = True,
+        labels=False):
     
     colors: list = []
     sizes: list = []
+    print("Size factor =", size_factor)
     for n in G.nodes():
         obj = G.nodes[n][attrname]
         red: float = color_factor * getattr(obj, color_attr)
         size: float = size_factor * getattr(obj, size_attr)
-        if log and size > 0:
-            size = math.log(size)
+        if sqrt_size and size > 0:
+            size = math.sqrt(size)
         if sqrt_color and red > 0:
             red = math.sqrt(red)
             
@@ -53,6 +56,9 @@ def draw_colored_nodes(G: nx.Graph,
         sizes.append(size)
         
     nx.draw_networkx_nodes(G, pos, labels={n: n for n in G.nodes()}, node_color=colors, node_size=sizes)
+    
+    if not labels:
+        return
     nx.draw_networkx_labels(G,
         {n: (p[0], p[1] - y_offset) for n, p in pos.items()},
         labels={n: n for n in G.nodes()},

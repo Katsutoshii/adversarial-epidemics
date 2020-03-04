@@ -168,7 +168,7 @@ def get_SIRDN_graph(b=0.000002, insulation=0.5, recovery=0.02):
     pos = get_pos_data()
     
     # mortality_rate = {k:0.15 for k in pop_dict}
-    mortality_rate = {k:0.15 for k in pop_dict}
+    mortality_rate = {k:0.08 for k in pop_dict}
     #TEMP HACK
     node_wreg, infected, percent_infected =  temp_create_data(G, pop_dict)
     

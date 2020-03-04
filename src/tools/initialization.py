@@ -8,6 +8,7 @@ Author: Sucharita Jayanti
 import numpy as np
 import pandas as pd
 import networkx as nx
+import math
 
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -117,24 +118,28 @@ def get_spread_rate_dict(year, max_spread_rate):
 
 # NODE POSITION DATA RETRIEVAL
 
-# HELPER FUNCTION
-# Gets country coordinates (latitude, longitude)
-# Uses coords, hScale, vScale, hShift and vShift to find positions for the nodes
-def get_pos_dict(hScale, vScale, hShift, vShift):
-    pos_data = pd.read_csv('../data/SIRDNMetrics/Location.csv')
-    pos = {pos_data['Country'][i]:(pos_data['Longitude'][i] * hScale + hShift, pos_data['Latitude'][i] * vScale + vShift) for i in range(pos_data.shape[0])}
-    return pos
+# Convert positions to mercator map projection coordinates
+def get_x(width, long):
+    width = width - 200
+    return int(round(math.fmod((width * (180.0 + long) / 360.0), (1.5 * width)))) + 100
 
-# Calculates country positions from scratch
-# (0,0) at the top left corner
+def get_y(width, height, lat):
+    height = height - 100
+    lat_rad = lat * math.pi / 180.0
+    merc = 0.5 * math.log( (1 + math.sin(lat_rad)) / (1 - math.sin(lat_rad)) )
+    return int(round((height / 2) - ((width) * merc / (2 * math.pi))))+25
+
+
+# Get x, y coordinates for plotting (with some correction for the way the map was trimmed
 def get_pos_data():
     world_map=mpimg.imread('../data/SIRDNMetrics/worldMap.png')
     map_dim = world_map.shape
-    
-    pos_dict = get_pos_dict(map_dim[1]/360, -1*map_dim[0]/240, map_dim[1]/2, map_dim[0]/2 + 300)
-    
-    return pos_dict
+    h = world_map.shape[0]
+    w = world_map.shape[1]
 
+    pos_data = pd.read_csv('../data/SIRDNMetrics/Location.csv')
+    pos = {pos_data['Country'][i]:(get_x(w, pos_data['Longitude'][i]), get_y(w, h, pos_data['Latitude'][i])+400) for i in range(pos_data.shape[0])}
+    return pos
 
 # TEMP HACK FUNCTION FOR OTHER DATA RETRIEVAL
 

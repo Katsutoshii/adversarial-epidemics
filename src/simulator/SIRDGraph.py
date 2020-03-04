@@ -4,7 +4,7 @@ Project: simulator
 File Created: Monday, 2nd March 2020 3:13:54 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Tuesday, 3rd March 2020 9:48:32 pm
+Last Modified: Tuesday, 3rd March 2020 10:30:51 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 from dataclasses import dataclass, field
@@ -89,19 +89,20 @@ class SIRDGraph(Stepable):
         return {n: self.G.nodes[n]["SIRD"].get_dict(labels=set(["cases", "recoveries", "deaths"]))
             for n in self.G.nodes()}
 
-    def save_dict(self):
+    def save_dict(self, filename: str = "../data/out/test.json",):
         """
         Saves the data as a json file
         """
         data_dict: dict = self.get_dict()
-        with open("../data/out/test.json", "w") as fp:
+        with open(filename, "w") as fp:
             json.dump(data_dict, fp)
 
-    def run(self, maxsteps: int = 200):
+    def run(self, maxsteps: int = 200, draw: bool = True):
         """
         Runs the simulation until the state stops changing
         """
         for _ in range(maxsteps):
-            self.show()
+            if draw:
+                self.show()
             if not self.step():
                 break

@@ -4,7 +4,7 @@ Project: simulator
 File Created: Monday, 2nd March 2020 3:13:54 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Tuesday, 3rd March 2020 10:30:51 pm
+Last Modified: Wednesday, 4th March 2020 12:55:28 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 from dataclasses import dataclass, field
@@ -84,7 +84,7 @@ class SIRDGraph(Stepable):
 
     def get_dict(self):
         """
-        Gets a dictionary representation of the recorde data
+        Gets a dictionary representation of the recorded data
         """
         return {n: self.G.nodes[n]["SIRD"].get_dict(labels=set(["cases", "recoveries", "deaths"]))
             for n in self.G.nodes()}

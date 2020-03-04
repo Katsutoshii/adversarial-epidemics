@@ -31,7 +31,9 @@ def get_edge_weight(base_weight, w_n1, w_n2, max_weight):
     return np.sqrt(base_weight/max_weight)
 
 
-def get_graph_with_labels(G, pop_dict, node_wreg, spread_rate, mortality_rate, recovery, infected, pos, max_weight):
+def get_graph_with_labels(G, pop_dict, node_wreg, spread_rate,
+    mortality_rate, recovery, infected, pos, max_weight,
+    insulation=0.5):
     
     pop_dict = clean_up_data(G, pop_dict, "populations", 0)
     node_wreg = clean_up_data(G, node_wreg, "weight regulations", 1)
@@ -44,8 +46,20 @@ def get_graph_with_labels(G, pop_dict, node_wreg, spread_rate, mortality_rate, r
     
     max_weight = max_weight + 0.0000000001
 
-    nodes = [(n, SIRD(b=spread_rate[n], k=recovery[n], w=mortality_rate[n], N=pop_dict[n], i=infected[n]), pos[n]) for n in list(G.nodes())] 
-    edges = [(u,v, get_edge_weight(d['weight'], node_wreg[u], node_wreg[v], max_weight)) for (u,v,d) in G.edges(data=True)]
+    nodes = [(n,
+        SIRD(
+            b=spread_rate[n],
+            k=recovery[n],
+            w=mortality_rate[n],
+            N=pop_dict[n],
+            i=infected[n],
+            s=1-infected[n],
+            insulation=insulation),
+        pos[n])
+        for n in list(G.nodes())]
+
+    edges = [(u,v, get_edge_weight(d['weight'], node_wreg[u], node_wreg[v], max_weight))
+        for (u,v,d) in G.edges(data=True)]
     
     return nodes, edges
 
@@ -142,7 +156,7 @@ def temp_create_data(G, pop_dict):
 
 
 # ## Graph Generation Code ##
-def get_SIRDN_graph(b=0.000002):
+def get_SIRDN_graph(b=0.000002, insulation=0.5):
     G, max_weight = generate_country_graph()
     pop_dict = get_pop_data(2003)#pop_dict_year(get_pop_data(), 2003)
     spread_rate = get_spread_rate_dict(2003, b)
@@ -156,7 +170,9 @@ def get_SIRDN_graph(b=0.000002):
     # Generate SIRDN graph
     print("spread rate")
     print(spread_rate)
-    n, e = get_graph_with_labels(G, pop_dict, node_wreg, spread_rate, mortality_rate, recovery, percent_infected, pos, max_weight)
+    n, e = get_graph_with_labels(G, pop_dict, node_wreg, spread_rate,
+        mortality_rate, recovery, percent_infected, pos, max_weight,
+        insulation=insulation)
     return n, e, G, pos
 
 

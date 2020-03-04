@@ -4,7 +4,7 @@ Project: simulator
 File Created: Monday, 2nd March 2020 1:45:44 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Monday, 2nd March 2020 4:50:13 pm
+Last Modified: Wednesday, 4th March 2020 1:04:47 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -26,7 +26,8 @@ class SIRD(Stepable):
     r: float = 0
     d: float = 0
 
-    xi: float = 0       # external infection amount
+    xi: float = 0               # external infection amount
+    insulation: float = 0.1     # reduction factor for external influence
 
     records: Records = field(default_factory=Records)
 
@@ -34,9 +35,10 @@ class SIRD(Stepable):
         self.records = Records(
             pcolors=["blue", "red", "yellow", "black"],
             plabels=["susceptible", "cases", "recoveries", "deaths"])
+        self.record()
             
     def infect(self, amount: float):
-        self.xi = amount
+        self.xi = amount * self.insulation
         
     def step(self):
         ds: float = -self.b * self.s * self.i - self.xi

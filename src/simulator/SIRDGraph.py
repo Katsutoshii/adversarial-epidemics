@@ -4,7 +4,7 @@ Project: simulator
 File Created: Monday, 2nd March 2020 3:13:54 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Tuesday, 3rd March 2020 10:30:51 pm
+Last Modified: Wednesday, 4th March 2020 1:23:15 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 from dataclasses import dataclass, field
@@ -44,6 +44,12 @@ class SIRDGraph(Stepable):
 
         self.G.add_weighted_edges_from(self.edges)
 
+    def disconnect(self, n: object, m: object):
+        """
+        Disconnects two nodes
+        """
+        self.G.remove_edge(n, m)
+
     def draw(self):
         self.draw_background()
         draw_weighted_edges(self.G, self.pos,
@@ -73,7 +79,7 @@ class SIRDGraph(Stepable):
         for n in self.G.nodes():
             amount: float = 0
             for nn in self.G.neighbors(n):
-                nn_sird = self.G.nodes[n]["SIRD"]
+                nn_sird = self.G.nodes[nn]["SIRD"]
                 amount += self.G[n][nn]['weight'] * nn_sird.i
             
             self.G.nodes[n]["SIRD"].infect(amount)
@@ -84,7 +90,7 @@ class SIRDGraph(Stepable):
 
     def get_dict(self):
         """
-        Gets a dictionary representation of the recorde data
+        Gets a dictionary representation of the recorded data
         """
         return {n: self.G.nodes[n]["SIRD"].get_dict(labels=set(["cases", "recoveries", "deaths"]))
             for n in self.G.nodes()}

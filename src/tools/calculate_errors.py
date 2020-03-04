@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 mpl.style.use('seaborn')
-%matplotlib inline
 import heapq
 
 def calculate_diff(generated, truth, k):

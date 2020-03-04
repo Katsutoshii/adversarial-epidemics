@@ -126,7 +126,6 @@ def get_pos_data():
 
 def temp_create_data(G, pop_dict, max_weight):
     node_wreg = {k:1 for k in pop_dict}
-    mortality_rate = {k:0.1 for k in pop_dict}
     recovery = {k:0.8 for k in pop_dict}
     infected = {k:0 for k in pop_dict}
     infected["Germany"] = 1
@@ -148,6 +147,9 @@ def get_SIRDN_graph():
     pop_dict = get_pop_data(2003)#pop_dict_year(get_pop_data(), 2003)
     spread_rate = get_spread_rate_dict(2003, 0.2)
     pos = get_pos_data()
+    
+    # mortality_rate = {k:0.15 for k in pop_dict}
+    mortality_rate = {k:0.15 for k in pop_dict}
     #TEMP HACK
     node_wreg, mortality_rate, recovery, infected, percent_infected =  temp_create_data(G, pop_dict, max_weight)
     

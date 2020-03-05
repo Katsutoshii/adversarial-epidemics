@@ -4,7 +4,7 @@ Project: simulator
 File Created: Monday, 2nd March 2020 3:13:54 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Wednesday, 4th March 2020 10:13:40 pm
+Last Modified: Wednesday, 4th March 2020 11:06:55 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 from dataclasses import dataclass, field
@@ -23,7 +23,7 @@ class SIRDGraph(Stepable):
     nodes: list
     edges: list
     pos: dict = field(default_factory=dict)
-    G: nx.Graph = nx.Graph()
+    G: nx.DiGraph = nx.DiGraph()
 
     # draw settings
     font_size: int = 12
@@ -78,9 +78,9 @@ class SIRDGraph(Stepable):
         """
         for n in self.G.nodes():
             amount: float = 0
-            for nn in self.G.neighbors(n):
+            for nn, _ in self.G.in_edges(n):
                 nn_sird = self.G.nodes[nn]["SIRD"]
-                amount += self.G[n][nn]['weight'] * nn_sird.i
+                amount += self.G[nn][n]['weight'] * nn_sird.i
             
             self.G.nodes[n]["SIRD"].infect(amount)
         

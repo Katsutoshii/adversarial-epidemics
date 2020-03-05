@@ -109,7 +109,10 @@ def get_spread_rate_dict(year, max_spread_rate):
     for i in range(df.shape[0]):
         density_code_dict[df.iloc[i][0]] = df.iloc[i][1]
         max_density = max(df.iloc[i][1], max_density)
-        
+
+    density_code_dict['CHN'] = 6000 # based on metropolitan areas
+    # density_code_dict['HKG'] = 4000
+    
     # Country Name -> Spread Rate
     sr_dict = {}
     for loc in code_dict:

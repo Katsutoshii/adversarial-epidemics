@@ -3,7 +3,7 @@ import matplotlib as mpl
 mpl.style.use('seaborn')
 import heapq
 import json
-
+from .initialization import get_pop_data
 
 def calculate_diff(generated, truth, k):
     diff= {}
@@ -86,7 +86,33 @@ def plot_max_error_countries(generated, truth, countries):
         ax2.legend()
         
         plt.show()
+
+def country_prediction_metric(generated, truth):
+    data_points= len(generated[list(generated.keys())[0]]['cases'])
+
+    predicted_percentages= []
+    pop_dict= get_pop_data(2003)
+
+    for index in range(data_points):
+        current_result= 0
+        for country in truth:
+            if country in generated:
+                # print(generated[country]['cases'][index], truth[country]['cases'][index])
+                # if (generated[country]['cases'][index] == 0 and truth[country]['cases'][index] == 0) or (generated[country]['cases'][index] > 0 and truth[country]['cases'][index] > 0):
+                if abs(generated[country]['cases'][index]- truth[country]['cases'][index]) <= 50:
+                    current_result+= 1
+        predicted_percentages.append(current_result*100/(len(truth)-1))
     
+    fig1, ax1= plt.subplots()
+    ax1.set_title("Country Predictions")
+    ax1.plot(predicted_percentages, marker=None, markersize=6,  linewidth= 4)
+    ax1.set_xlabel("Days")
+    ax1.set_ylabel("Predicted Correctly %")
+    
+    plt.show()
+
+        
+
 def calculate(k= 2):
     with open("../data/out/test.json", "r") as file_handle:
         generated= json.load(file_handle)
@@ -94,10 +120,10 @@ def calculate(k= 2):
     with open("../data/in/all_countries_data.json", "r") as file_handle:
         truth= json.load(file_handle)
 
+    country_prediction_metric(generated, truth)
     diff, max_error_countries= calculate_diff(generated, truth, k)
     plot_max_error_countries(generated, truth, max_error_countries)   
 
-# calculate(k= 2)
 ## dummy values
 
 # generated= {"China": {

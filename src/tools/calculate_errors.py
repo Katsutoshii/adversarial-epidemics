@@ -60,30 +60,32 @@ def plot_max_error_countries(generated, truth, countries):
     #     ax.legend()
 
     # cumulative_cases= [x + y + z for x, y, z in zip(generated["China"]['cases'], generated["China"]['deaths'], generated["China"]['recoveries'])]
-    cumulative_cases= []
-    specific_country= "India"
-    for index in range(len(generated[specific_country]['cases'])):
-        cumulative_cases.append(generated[specific_country]['cases'][index] + generated[specific_country]['deaths'][index] + generated[specific_country]['recoveries'][index])
-
-    fig1, ax1= plt.subplots()
-    ax1.set_title(specific_country+" cases")
-    ax1.plot(cumulative_cases, marker='o', markersize=12,  linewidth= 4, label= 'generated')
-    ax1.plot(truth[specific_country]['cases'], marker='o', markersize=12, linewidth= 4, label= 'truth')
-    ax1.legend()
-
-    fig2, ax2= plt.subplots()
-    ax2.set_title(specific_country+" deaths")
-    ax2.plot(generated[specific_country]['deaths'], marker='o', markersize=12,  linewidth= 4, label= 'generated')
-    ax2.plot(truth[specific_country]['deaths'], marker='o', markersize=12, linewidth= 4, label= 'truth')
-    ax2.legend()
-
-    fig2, ax2= plt.subplots()
-    ax2.set_title(specific_country+ " recoveries")
-    ax2.plot(generated[specific_country]['recoveries'], marker='o', markersize=12,  linewidth= 4, label= 'generated')
-    ax2.plot(truth[specific_country]['recoveries'], marker='o', markersize=12, linewidth= 4, label= 'truth')
-    ax2.legend()    
     
-    plt.show()
+    for _, specific_country in countries:
+        cumulative_cases= []
+        #specific_country= "India"
+        for index in range(len(generated[specific_country]['cases'])):
+            cumulative_cases.append(generated[specific_country]['cases'][index] + generated[specific_country]['deaths'][index] + generated[specific_country]['recoveries'][index])
+
+        fig1, ax1= plt.subplots()
+        ax1.set_title(specific_country+" cases")
+        ax1.plot(cumulative_cases, marker='o', markersize=12,  linewidth= 4, label= 'generated')
+        ax1.plot(truth[specific_country]['cases'], marker='o', markersize=12, linewidth= 4, label= 'truth')
+        ax1.legend()
+
+        fig2, ax2= plt.subplots()
+        ax2.set_title(specific_country+" deaths")
+        ax2.plot(generated[specific_country]['deaths'], marker='o', markersize=12,  linewidth= 4, label= 'generated')
+        ax2.plot(truth[specific_country]['deaths'], marker='o', markersize=12, linewidth= 4, label= 'truth')
+        ax2.legend()
+
+        fig2, ax2= plt.subplots()
+        ax2.set_title(specific_country+ " recoveries")
+        ax2.plot(generated[specific_country]['recoveries'], marker='o', markersize=12,  linewidth= 4, label= 'generated')
+        ax2.plot(truth[specific_country]['recoveries'], marker='o', markersize=12, linewidth= 4, label= 'truth')
+        ax2.legend()
+        
+        plt.show()
     
 def calculate(k= 2):
     with open("../data/out/test.json", "r") as file_handle:

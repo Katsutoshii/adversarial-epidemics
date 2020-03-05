@@ -97,23 +97,26 @@ def get_pop_data(year):
 def get_spread_rate_dict(year, max_spread_rate):
     p_data = pd.read_csv('../data/SIRDNMetrics/PopulationDensity.csv')
     
+    # Country Name -> Country Code
     code_dict = get_name_alpha3_conv()
     
     label = str(year)
     df = p_data[['Country Code',label]]
-    pop_code_dict = {}
     
+    # Country Code -> Density
+    density_code_dict = {}
     max_density = 0
     for i in range(df.shape[0]):
-        pop_code_dict[df.iloc[i][0]] = df.iloc[i][1]
+        density_code_dict[df.iloc[i][0]] = df.iloc[i][1]
         max_density = max(df.iloc[i][1], max_density)
-            
-    pop_dict = {}
+        
+    # Country Name -> Spread Rate
+    sr_dict = {}
     for loc in code_dict:
-        if code_dict[loc] in pop_code_dict:
-            pop_dict[loc] = pop_code_dict[code_dict[loc]] * (max_spread_rate)/(max_density)
+        if code_dict[loc] in density_code_dict:
+            sr_dict[loc] = np.sqrt(np.sqrt(density_code_dict[code_dict[loc]] * (max_spread_rate)/(max_density)))
             
-    return pop_dict
+    return sr_dict
 
 
 # NODE POSITION DATA RETRIEVAL
@@ -160,7 +163,7 @@ def temp_create_data(G, pop_dict):
 
 
 # ## Graph Generation Code ##
-def get_SIRDN_graph(b=0.000002, insulation=0.5, recovery=0.02):
+def get_SIRDN_graph(b=0.000002, insulation=0.5, recovery=0.02, mortality=0.12):
     G, max_weight = generate_country_graph()
     pop_dict = get_pop_data(2003)#pop_dict_year(get_pop_data(), 2003)
     spread_rate = get_spread_rate_dict(2003, b)
@@ -168,7 +171,7 @@ def get_SIRDN_graph(b=0.000002, insulation=0.5, recovery=0.02):
     pos = get_pos_data()
     
     # mortality_rate = {k:0.15 for k in pop_dict}
-    mortality_rate = {k:0.08 for k in pop_dict}
+    mortality_rate = {k:mortality for k in pop_dict}
     #TEMP HACK
     node_wreg, infected, percent_infected =  temp_create_data(G, pop_dict)
     

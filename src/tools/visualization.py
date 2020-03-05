@@ -4,7 +4,7 @@ Project: tools
 File Created: Saturday, 29th February 2020 1:50:46 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Tuesday, 3rd March 2020 9:50:13 pm
+Last Modified: Wednesday, 4th March 2020 10:07:10 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 
@@ -43,6 +43,7 @@ def draw_colored_nodes(G: nx.Graph,
     colors: list = []
     sizes: list = []
     print("Size factor =", size_factor)
+    print("Color factor =", color_factor)
     for n in G.nodes():
         obj = G.nodes[n][attrname]
         red: float = color_factor * getattr(obj, color_attr)
@@ -50,7 +51,7 @@ def draw_colored_nodes(G: nx.Graph,
         if sqrt_size and size > 0:
             size = math.sqrt(size)
         if sqrt_color and red > 0:
-            red = math.sqrt(red)
+            red = math.sqrt(red + 0.01)
             
         colors.append((min(red, 1), 0, 0))
         sizes.append(size)

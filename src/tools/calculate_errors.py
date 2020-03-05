@@ -90,19 +90,34 @@ def plot_max_error_countries(generated, truth, countries):
 def country_prediction_metric(generated, truth):
     data_points= len(generated[list(generated.keys())[0]]['cases'])
 
+    countries_got_wrong= []
     predicted_percentages= []
     pop_dict= get_pop_data(2003)
+    pop_dict['Taiwan']= 22603000
+    # print(pop_dict)
 
     for index in range(data_points):
+        countries_got_wrong.append([])
         current_result= 0
         for country in truth:
             if country in generated:
-                # print(generated[country]['cases'][index], truth[country]['cases'][index])
-                # if (generated[country]['cases'][index] == 0 and truth[country]['cases'][index] == 0) or (generated[country]['cases'][index] > 0 and truth[country]['cases'][index] > 0):
-                if abs(generated[country]['cases'][index]- truth[country]['cases'][index]) <= 50:
+                threshold= 0.000003*int(float(pop_dict[country]))
+                print(country, pop_dict[country], threshold)
+
+                if abs(generated[country]['cases'][index] + generated[country]['deaths'][index] + generated[country]['recoveries'][index] - truth[country]['cases'][index]) <= threshold:
                     current_result+= 1
+                else:
+                    countries_got_wrong[-1].append(country)
+            else:
+                if country == "u" or country == "Total":
+                    continue
+                countries_got_wrong[-1].append(country)
+
         predicted_percentages.append(current_result*100/(len(truth)-1))
     
+    for day, countries in enumerate(countries_got_wrong):
+        print(day, countries)
+
     fig1, ax1= plt.subplots()
     ax1.set_title("Country Predictions")
     ax1.plot(predicted_percentages, marker=None, markersize=6,  linewidth= 4)
@@ -121,8 +136,8 @@ def calculate(k= 2):
         truth= json.load(file_handle)
 
     country_prediction_metric(generated, truth)
-    diff, max_error_countries= calculate_diff(generated, truth, k)
-    plot_max_error_countries(generated, truth, max_error_countries)   
+    # diff, max_error_countries= calculate_diff(generated, truth, k)
+    # plot_max_error_countries(generated, truth, max_error_countries)   
 
 ## dummy values
 

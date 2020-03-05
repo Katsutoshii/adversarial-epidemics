@@ -4,7 +4,7 @@ Project: simulator
 File Created: Monday, 2nd March 2020 3:13:54 pm
 Author: Josiah Putman (joshikatsu@gmail.com)
 -----
-Last Modified: Wednesday, 4th March 2020 1:23:15 pm
+Last Modified: Wednesday, 4th March 2020 10:13:40 pm
 Modified By: Josiah Putman (joshikatsu@gmail.com)
 '''
 from dataclasses import dataclass, field
@@ -29,7 +29,7 @@ class SIRDGraph(Stepable):
     font_size: int = 12
     width_factor: float = 1/2
     size_factor: float = 1/30000
-    color_factor: float = 2
+    color_factor: float = 10000
     y_offset: float = 0.03
     font_color: str = "black"
     labels: bool = False
@@ -55,7 +55,7 @@ class SIRDGraph(Stepable):
         draw_weighted_edges(self.G, self.pos,
             width_factor=self.width_factor)
         draw_colored_nodes(self.G, self.pos,
-            attrname="SIRD", color_attr="i", size_attr="N",
+            attrname="SIRD", color_attr="t", size_attr="N",
             size_factor=self.size_factor,
             color_factor=self.color_factor,
             font_size=self.font_size,
